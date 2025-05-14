@@ -123,7 +123,7 @@ def pulse_sequence(
     """
     initialize(ser)
     xray_off(ser)
-    time.sleep(off_time)
+    time.sleep(settle_time)
 
     # Countdown
     print("X-ray pulse measurement is about to start:")
