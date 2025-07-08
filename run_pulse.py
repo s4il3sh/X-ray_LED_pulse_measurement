@@ -13,8 +13,7 @@ KV_SET      = 70       # fixed tube voltage [kV]
 MAX_UA      = 250      # full-scale tube current [µA]
 START_UA    = 20       # starting tube current [µA]
 STEP_UA     = 20       # current increment [µA]
-END_UA      = 200      # final tube current [µA]
-
+END_UA      = 100      # final tube current [µA]
 ON_TIME     = 10       # seconds each pulse is ON
 OFF_TIME    = 10       # seconds each pulse is OFF
 SETTLE_TIME = 2        # seconds to wait after ON before reading
@@ -45,17 +44,19 @@ if __name__ == "__main__":
                         WAIT_TIME
                     )
                 except KeyboardInterrupt:
+                    # User pressed Ctrl+C *during* pulse_sequence
                     print("\n⚠️ Interrupted by user.")
-                    break
-                finally:
-                    # Safety: always turn the X-ray OFF after each sequence
                     xray_off(ser)
                     print("X-Ray turned OFF for safety.")
 
-                # Ask the user if they want to continue or exit
-                user_input = input("\nDo you want to perform another pulse measurement? (yes/no): ").strip().lower()
-                if user_input not in ("yes", "y"):
-                    print("Exiting program.")
+                else:
+                    # Normal completion: turn off quietly
+                    xray_off(ser)
+
+                # Now ask to run again or exit
+                answer = input("\nAnother run? (yes/no): ").strip().lower()
+                if answer not in ("yes", "y"):
+                    print("Exiting.")
                     break
 
     except Exception as e:
